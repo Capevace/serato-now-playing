@@ -14,6 +14,15 @@
 	</div>
 </div>
 
+<script type="text/javascript">
+	window.onerror = function(message, url, lineNumber) { 
+		console.error(message, url, lineNumber);
+	  //save error and send to server for example.
+	  document.querySelector('.track').innerHTML = message + ', ' + url + ', ' + lineNumber;
+	  document.querySelector('.track').style['font-size'] = '1rem';
+	};  
+</script>
+
 <script type="text/javascript" src="helpers.js"></script>
 <script type="text/javascript" src="app.js"></script>
 

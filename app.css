@@ -15,19 +15,25 @@ html, body {
 	display: flex;
 	position: relative;
 	align-items: center;
+	height: 5rem;
 }
 
 .text {
 	line-height: 1;
 	margin-left: 10px;
+	display: flex;
+	align-items: center;
 }
 
 .title {
 	font-size: 1.9rem;
+	font-weight: 400;
 }
 
 .artist {
 	font-size: 1.7rem;
+	font-weight: 300;
+	opacity: 0.7;
 }
 
 .text, .title, .artist {

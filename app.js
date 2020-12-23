@@ -1,10 +1,26 @@
+'use strict';
+
 let nowPlayingHash = null;
 
 const size = getQueryVariable('size') || '100';
 const color = getQueryVariable('color') || 'black';
+const style = getQueryVariable('style') || 'block';
 
 const css = document.createElement('style');
-css.innerHTML = `html, body { font-size: ${size}%; color: ${color}; }`;
+css.innerHTML = `html, body { 
+	font-size: ${size}%; color: ${color}; 
+}
+
+.title, .artist {
+	display: ${style === 'inline' ? 'inline-block' : 'block'};
+	font-size: 2.5rem;
+}
+
+.title {
+	margin-right: .75rem;
+}
+
+`;
 document.body.append(css);
 
 setInterval(tick, 2000);
@@ -103,10 +119,11 @@ async function fetchCoverForReleaseIds(releaseIds) {
 	const chunks = chunkArray(releaseIds, 2);
 	for (const idChunk of chunks) {
 		try {
-			const id = await Promise.any(idChunk.map(id => checkCover(id)));
+			const id = await promiseAny(idChunk.map(id => checkCover(id)));
 			return id;
 		} catch (e) {
 			// nothin
+			console.error('wat', e);
 		}
 	}
 

@@ -1,3 +1,13 @@
+'use strict';
+
+function reversePromise(promise) {
+    return new Promise((resolve, reject) => Promise.resolve(promise).then(reject, resolve));
+}
+
+function promiseAny(iterable) {
+    return reversePromise(Promise.all([...iterable].map(reversePromise)));
+};
+
 function chunkArray(array, groupsize){
     var sets = [], chunks, i = 0;
     chunks = Math.ceil(array.length / groupsize);
