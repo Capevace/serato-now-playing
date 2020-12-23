@@ -1,0 +1,42 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	background: transparent;
+	font-size: 100%;
+	font-family: 'Teko', sans-serif;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+.track {
+	width: 100%;
+	display: flex;
+	position: relative;
+	align-items: center;
+}
+
+.text {
+	line-height: 1;
+	margin-left: 10px;
+}
+
+.title {
+	font-size: 1.9rem;
+}
+
+.artist {
+	font-size: 1.7rem;
+}
+
+.text, .title, .artist {
+	white-space: nowrap;
+	  overflow: hidden;
+	  text-overflow: ellipsis;
+}
+
+.cover {
+	border-radius: 100%;
+	max-width: 5rem;
+}
