@@ -44,3 +44,7 @@ function getQueryVariable(variable) {
     
     return null;
 }
+
+function randomId() {
+	return Math.floor(Math.random() * 10000);
+}

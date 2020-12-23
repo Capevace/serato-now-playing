@@ -2,26 +2,51 @@
 
 let nowPlayingHash = null;
 
-const size = getQueryVariable('size') || '100';
-const color = getQueryVariable('color') || 'black';
-const style = getQueryVariable('style') || 'block';
+const CONFIG = {
+	dataUrl: getQueryVariable('url') || '/example.json',
+	size: getQueryVariable('size') || '100',
+	color: getQueryVariable('color') || 'black',
+	style: getQueryVariable('style') || 'block'
+};
+
+console.info('Using config:', CONFIG);
 
 const css = document.createElement('style');
 css.innerHTML = `html, body { 
-	font-size: ${size}%; color: ${color}; 
+	font-size: ${CONFIG.size}%; color: ${CONFIG.color}; 
+}
+
+${CONFIG.style === 'inline' 
+? `
+.text {
+	display: flex;
+	align-items: center;
+	transform: translateY(.35rem);
 }
 
 .title, .artist {
-	display: ${style === 'inline' ? 'inline-block' : 'block'};
-	font-size: 2.5rem;
+	display:;
+	font-size: 3.5rem;
 }
 
 .title {
 	margin-right: .75rem;
 }
+` 
+: ''}
 
 `;
 document.body.append(css);
+
+const DOM = {
+	text: document.querySelector('.text'),
+	cover: document.querySelector('.cover'),
+	title: document.querySelector('.title'),
+	artist: document.querySelector('.artist')
+};
+
+DOM.cover.addEventListener('load', coverDidLoad);
+DOM.cover.addEventListener('error', coverDidError);
 
 setInterval(tick, 2000);
 tick();
@@ -35,16 +60,15 @@ async function tick() {
 		updateTrack(nowPlaying);
 
 		const coverId = await fetchCoverForTrackJson(nowPlaying);
-
-		if (coverId)
-			updateCover(coverId);
+		
+		updateCover(coverId);
 	}
 }
 
 
 async function fetchNowPlaying() {
 	try {
-		const response = await fetch('/example.json');
+		const response = await fetch(CONFIG.dataUrl, { cache: 'reload' });
 		const json = await response.json();
 
 		return json;
@@ -55,17 +79,32 @@ async function fetchNowPlaying() {
 }
 
 async function updateTrack(trackJson) {
-	document.querySelector('.title').textContent = trackJson.title;
-	document.querySelector('.artist').textContent = trackJson.artist;
-	
-	document.querySelector('.cover').src = 'default.jpg';
+	DOM.text.classList.add('hidden');
+	DOM.cover.classList.add('hidden');
+
+	setTimeout(() => {
+		DOM.title.textContent = trackJson.title;
+		DOM.artist.textContent = trackJson.artist;
+		DOM.text.classList.remove('hidden');
+	}, 300);
 }
 
 async function updateCover(coverId) {
-	const coverDOM = document.querySelector('.cover');
-	
-	// coverDOM.classList.remove('hidden');
-	coverDOM.src = `https://coverartarchive.org/release/${coverId}/front`;
+	if (coverId) {
+		DOM.cover.src = `https://coverartarchive.org/release/${coverId}/front`;
+	} else {
+		DOM.cover.src = '';
+	}
+}
+
+function coverDidLoad() {
+	if (DOM.cover.src !== '')
+		DOM.cover.classList.remove('hidden');
+}
+
+function coverDidError() {
+	DOM.cover.classList.add('hidden');
+	DOM.cover.src = '';
 }
 
 async function fetchCoverForTrackJson(trackJson) {
